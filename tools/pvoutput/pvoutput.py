@@ -42,7 +42,7 @@ INFLUXDB_PORT = "8086"
 INFLUXDB_USER = ""
 INFLUXDB_PASS = ""
 INFLUXDB_DB = "powerwall"
-INFLUXDB_TZ = "America/Los_Angeles"
+INFLUXDB_TZ = "America/New_York"
 
 # Weather Settings
 WEATHER_UNITS = "metric"  # metric, imperial or standard

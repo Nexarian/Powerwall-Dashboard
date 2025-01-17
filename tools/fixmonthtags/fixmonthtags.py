@@ -128,7 +128,7 @@ else:
         break
 
     while True:
-        response = input("Timezone (e.g. America/Los_Angeles): ")
+        response = input("Timezone (e.g. America/New_York): ")
         if response.strip() != "":
             ITZ = response.strip()
             if tz.gettz(ITZ) is None:

@@ -156,7 +156,7 @@ if [ -f tools/solar-only/compose.env ] && [ ! -f ${COMPOSE_ENV_FILE} ]; then
 
     if [ -f tz ]; then
         cp tz ../../tz
-        ./tz.sh "America/Los_Angeles" > /dev/null 2>&1
+        ./tz.sh "America/New_York" > /dev/null 2>&1
     else
         # Files missing due to user manually pulling latest changes
         CURR_TZ=`cat ../../tz`
@@ -172,7 +172,7 @@ if [ -f tools/solar-only/compose.env ] && [ ! -f ${COMPOSE_ENV_FILE} ]; then
         fi
         echo ""
         cp tz ../../tz
-        ../../tz.sh "America/Los_Angeles" > /dev/null 2>&1
+        ../../tz.sh "America/New_York" > /dev/null 2>&1
     fi
 
     echo "Migrating solar-only installation..."
@@ -213,8 +213,8 @@ if [ "${PROFILE}" == "solar-only" ]; then
     echo "PW_EMAIL=${EMAIL}" > ${PW_ENV_FILE}
     echo "PW_PASSWORD=${PASSWORD}" >> ${PW_ENV_FILE}
     echo "PW_HOST=${IP}" >> ${PW_ENV_FILE}
-    echo "PW_TIMEZONE=America/Los_Angeles" >> ${PW_ENV_FILE}
-    echo "TZ=America/Los_Angeles" >> ${PW_ENV_FILE}
+    echo "PW_TIMEZONE=America/New_York" >> ${PW_ENV_FILE}
+    echo "TZ=America/New_York" >> ${PW_ENV_FILE}
     echo "PW_DEBUG=no" >> ${PW_ENV_FILE}
     echo "PW_STYLE=solar" >> ${PW_ENV_FILE}
 fi
@@ -227,10 +227,10 @@ fi
 
 # Remember Timezone and Reset to Default
 echo "Resetting Timezone to Default..."
-DEFAULT="America/Los_Angeles"
+DEFAULT="America/New_York"
 TZ=`cat tz`
 if [ -z "${TZ}" ]; then
-    TZ="America/Los_Angeles"
+    TZ="America/New_York"
 fi
 ./tz.sh "${DEFAULT}" > /dev/null 2>&1
 
@@ -312,7 +312,7 @@ fi
 if ! grep -q "TZ=" ${PW_ENV_FILE}; then
     echo "Your pypowerwall environmental settings are missing TZ."
     echo "Adding..."
-    echo "TZ=America/Los_Angeles" >> ${PW_ENV_FILE}
+    echo "TZ=America/New_York" >> ${PW_ENV_FILE}
 fi
 
 # Check to see if Weather Data is Available

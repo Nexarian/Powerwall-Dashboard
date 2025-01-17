@@ -2011,7 +2011,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"home\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
+          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"home\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
           "refId": "A"
         }
       ],
@@ -2104,7 +2104,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
+          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
           "refId": "A"
         }
       ],
@@ -2196,7 +2196,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"from_powerwall\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
+          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"from_powerwall\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
           "refId": "A"
         }
       ],
@@ -2355,7 +2355,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"from_grid\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
+          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"from_grid\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
           "refId": "A"
         },
         {
@@ -2364,7 +2364,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"to_grid\")\r\n  |> map(fn: (r) => ({r with _value: r._value * -1.0}))\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n\r\n\r\n",
+          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"to_grid\")\r\n  |> map(fn: (r) => ({r with _value: r._value * -1.0}))\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n\r\n\r\n",
           "refId": "B"
         },
         {
@@ -2373,7 +2373,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"grid\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n\r\n\r\n",
+          "query": "import \"date\"\r\nimport \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -2mo, stop: date.truncate(t: now(), unit: 1d))\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"grid\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n\r\n\r\n",
           "refId": "C"
         }
       ],
@@ -2529,7 +2529,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\" or r[\"_field\"] == \"home\" or r[\"_field\"] == \"grid\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
+          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: -1y, stop: now())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\" or r[\"_field\"] == \"home\" or r[\"_field\"] == \"grid\")\r\n  |> aggregateWindow(every: 1d, fn: sum)\r\n",
           "refId": "A"
         }
       ],
@@ -2763,7 +2763,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "import \"timezone\"\r\nimport \"date\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> aggregateWindow(every: 1mo, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({r with _field: \"Monthly Average\"}))\r\n  |> map(fn: (r) => ({r with _time: date.sub(d: 15d, from: r._time)}))",
+          "query": "import \"timezone\"\r\nimport \"date\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> aggregateWindow(every: 1mo, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({r with _field: \"Monthly Average\"}))\r\n  |> map(fn: (r) => ({r with _time: date.sub(d: 15d, from: r._time)}))",
           "refId": "F"
         },
         {
@@ -2790,7 +2790,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "kwh",
-          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n    |> map(fn: (r) => ({r with _field: \"Daily Solar Energy\"}))",
+          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n    |> map(fn: (r) => ({r with _field: \"Daily Solar Energy\"}))",
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -2834,7 +2834,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "kwh",
-          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 30)\r\n  |> map(fn: (r) => ({r with _field: \"Solar 30-day Average\"}))",
+          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 30)\r\n  |> map(fn: (r) => ({r with _field: \"Solar 30-day Average\"}))",
           "refId": "C",
           "resultFormat": "time_series",
           "select": [
@@ -2877,7 +2877,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "kwh",
-          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 365)\r\n  |> map(fn: (r) => ({r with _field: \"Solar 12-month Average\"}))",
+          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"solar\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 365)\r\n  |> map(fn: (r) => ({r with _field: \"Solar 12-month Average\"}))",
           "refId": "D",
           "resultFormat": "time_series",
           "select": [
@@ -2920,7 +2920,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "kwh",
-          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"home\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 30)\r\n  |> map(fn: (r) => ({r with _field: \"Home 30-day Average\"}))",
+          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"home\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 30)\r\n  |> map(fn: (r) => ({r with _field: \"Home 30-day Average\"}))",
           "refId": "B",
           "resultFormat": "time_series",
           "select": [
@@ -2963,7 +2963,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "kwh",
-          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/Los_Angeles\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"home\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 365)\r\n  |> map(fn: (r) => ({r with _field: \"Home 12-month Average\"}))",
+          "query": "import \"timezone\"\r\n\r\noption location = timezone.location(name: \"America/New_York\")\r\n\r\nfrom(bucket: \"tesla_energy\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"kwh\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"home\")\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> movingAverage(n: 365)\r\n  |> map(fn: (r) => ({r with _field: \"Home 12-month Average\"}))",
           "refId": "E",
           "resultFormat": "time_series",
           "select": [

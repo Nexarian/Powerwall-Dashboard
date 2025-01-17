@@ -375,7 +375,7 @@ Weather411 can be used here (note, plan activation may take some time).
         if configloaded and ITZ:
             response = input(f"Timezone: [{ITZ}] ").strip()
         else:
-            response = input("Timezone (e.g. America/Los_Angeles): ").strip()
+            response = input("Timezone (e.g. America/New_York): ").strip()
         if configloaded and ITZ and response == "":
             if tz.gettz(ITZ) is None:
                 print("Invalid timezone\n")

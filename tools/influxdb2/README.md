@@ -27,8 +27,8 @@ This includes optionals files and instructions to help setup InfluxDB 2.x (inste
     * Variable: PW_PORT | 8675  (Your Powerwall Port)
     * Variable: PW_EMAIL | something@else.com  (Your Powerwall account email)
     * Variable: PW_PASSWORD | Sup3rSecr3t  (Your Powerwall account password)
-    * Variable: PW_TIMEZONE | America/Los_Angeles  (Variable for your powerwall timezone)
-    * Variable: TZ | America/Los_Angeles  (Variable for local timezone)
+    * Variable: PW_TIMEZONE | America/New_York  (Variable for your powerwall timezone)
+    * Variable: TZ | America/New_York  (Variable for local timezone)
     * Variable: PW_CACHE_EXPIRE | 5 (Variable for Powerwall Cache Expiration)
   * Test it: http://localhost:8675/aggregates
 * Telegraf container

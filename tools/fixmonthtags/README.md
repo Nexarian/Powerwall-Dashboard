@@ -66,7 +66,7 @@ Port: [8086]
 User (leave blank if not used): [blank]
 Pass (leave blank if not used): [blank]
 Database: [powerwall]
-Timezone (e.g. America/Los_Angeles): Australia/Sydney
+Timezone (e.g. America/New_York): Australia/Sydney
 
 Config saved to 'fixmonthtags.conf'
 ```

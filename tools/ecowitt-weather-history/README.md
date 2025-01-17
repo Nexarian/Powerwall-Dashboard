@@ -82,7 +82,7 @@ User (leave blank if not used): [blank]
 Pass (leave blank if not used): [blank]
 Database: [powerwall]
 Field: [localweather]
-Timezone (e.g. America/Los_Angeles): Australia/Victoria
+Timezone (e.g. America/New_York): Australia/Victoria
 
 Config saved to 'ecowitt-weather-history.conf'
 ```

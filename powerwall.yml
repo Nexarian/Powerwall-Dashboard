@@ -8,6 +8,8 @@ services:
             nofile:
                 soft: 65536
                 hard: 65536
+
+        network_mode: host
         volumes:
             - type: bind
               source: ./influxdb.conf
@@ -16,8 +18,6 @@ services:
             - type: bind
               source: ./influxdb
               target: /var/lib/influxdb
-        ports:
-            - "${INFLUXDB_PORTS:-8086:8086}"
         env_file:
             - influxdb.env
         healthcheck:
@@ -28,7 +28,7 @@ services:
             start_period: 60s
 
     pypowerwall:
-        image: jasonacox/pypowerwall:0.14.9t88
+        image: jasonacox/pypowerwall:0.12.3.t68
         container_name: pypowerwall
         hostname: pypowerwall
         restart: unless-stopped
@@ -37,10 +37,10 @@ services:
               source: .auth
               target: /app/.auth
         user: "${PWD_USER:-1000:1000}"
-        ports:
-            - "${PYPOWERWALL_PORTS:-8675:8675}"
+        network_mode: host
         environment:
-            - PW_AUTH_PATH=.auth
+            - PW_AUTH_PATH_1=.auth
+            - PW_AUTH_PATH_2=.auth
         env_file:
             - pypowerwall.env
         healthcheck:
@@ -63,6 +63,7 @@ services:
             "--config-directory",
             "/etc/telegraf/telegraf.d"
         ]
+        network_mode: host
         volumes:
             - type: bind
               source: ./telegraf.conf
@@ -100,12 +101,11 @@ services:
                 soft: 65536
                 hard: 65536
         user: "${PWD_USER:-1000:1000}"
+        network_mode: host
         volumes:
             - type: bind
               source: ./grafana
               target: /var/lib/grafana
-        ports:
-            - "${GRAFANA_PORTS:-9000:9000}"
         env_file:
             - grafana.env
         depends_on:
@@ -123,13 +123,12 @@ services:
         hostname: weather411
         restart: unless-stopped
         user: "${PWD_USER:-1000:1000}"
+        network_mode: host
         volumes:
             - type: bind
               source: ./weather
               target: /var/lib/weather
               read_only: true
-        ports:
-            - "${WEATHER411_PORTS:-8676:8676}"
         environment:
             - WEATHERCONF=/var/lib/weather/weather411.conf
         depends_on:

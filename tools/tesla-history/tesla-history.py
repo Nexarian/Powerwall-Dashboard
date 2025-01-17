@@ -322,7 +322,7 @@ else:
         ITZ = args.timezone
     else:
         while True:
-            response = input("Timezone (e.g. America/Los_Angeles): ").strip()
+            response = input("Timezone (e.g. America/New_York): ").strip()
             if response != "":
                 ITZ = response
                 if tz.gettz(ITZ) is None:

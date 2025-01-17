@@ -8,7 +8,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Current and New TZ values
-DEFAULT="America/Los_Angeles"
+DEFAULT="America/New_York"
 CURRENT=`cat tz`
 NEW=$1
 

@@ -492,8 +492,8 @@ if [ ! -f ${PW_ENV_FILE} ]; then
     echo "PW_EMAIL=${EMAIL}" > ${PW_ENV_FILE}
     echo "PW_PASSWORD=${PASSWORD}" >> ${PW_ENV_FILE}
     echo "PW_HOST=${IP}" >> ${PW_ENV_FILE}
-    echo "PW_TIMEZONE=America/Los_Angeles" >> ${PW_ENV_FILE}
-    echo "TZ=America/Los_Angeles" >> ${PW_ENV_FILE}
+    echo "PW_TIMEZONE=America/New_York" >> ${PW_ENV_FILE}
+    echo "TZ=America/New_York" >> ${PW_ENV_FILE}
     echo "PW_DEBUG=no" >> ${PW_ENV_FILE}
     echo "PW_STYLE=${PW_STYLE}" >> ${PW_ENV_FILE}
     if [ ! -z "${PW_GW_PWD}" ]; then

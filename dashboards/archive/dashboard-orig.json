@@ -235,7 +235,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT \"mean_load_instant_power\" FROM \"http\" WHERE $timeFilter tz('America/Los_Angeles')",
+          "query": "SELECT \"mean_load_instant_power\" FROM \"http\" WHERE $timeFilter tz('America/New_York')",
           "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
@@ -254,7 +254,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "Solar Energy",
@@ -291,7 +291,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "Powerwall",
@@ -311,7 +311,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "autogen",
-          "query": "SELECT mean(from_pw) - mean(to_pw) FROM autogen.http WHERE $timeFilter GROUP BY time(5m) tz('America/Los_Angeles')",
+          "query": "SELECT mean(from_pw) - mean(to_pw) FROM autogen.http WHERE $timeFilter GROUP BY time(5m) tz('America/New_York')",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
@@ -330,7 +330,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "Grid Usage",
@@ -356,7 +356,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(from_grid) - mean(to_grid) FROM autogen.http WHERE $timeFilter GROUP BY time(5m) tz('America/Los_Angeles')",
+          "query": "SELECT mean(from_grid) - mean(to_grid) FROM autogen.http WHERE $timeFilter GROUP BY time(5m) tz('America/New_York')",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series",
@@ -375,7 +375,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "Charge",
@@ -426,7 +426,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "datasource": {
@@ -630,7 +630,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT  (1+from_solar/abs(from_solar))*from_solar/2  FROM (SELECT integral(solar)/1000/3600 - integral(to_pw)/1000/3600 - integral(to_grid)/1000/3600  AS from_solar FROM autogen.http WHERE  $timeFilter tz('America/Los_Angeles'))",
+          "query": "SELECT  (1+from_solar/abs(from_solar))*from_solar/2  FROM (SELECT integral(solar)/1000/3600 - integral(to_pw)/1000/3600 - integral(to_grid)/1000/3600  AS from_solar FROM autogen.http WHERE  $timeFilter tz('America/New_York'))",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -649,7 +649,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "From Powerwall",
@@ -680,7 +680,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "From Grid",
@@ -711,7 +711,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "Power Flow",
@@ -827,7 +827,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "SELECT min(\"grid_status\") FROM \"grid\".\"http\" WHERE $timeFilter GROUP BY time($__interval) tz('America/Los_Angeles')",
+          "query": "SELECT min(\"grid_status\") FROM \"grid\".\"http\" WHERE $timeFilter GROUP BY time($__interval) tz('America/New_York')",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
@@ -985,7 +985,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "Home Usage",
@@ -1088,7 +1088,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "Solar Energy",
@@ -1191,7 +1191,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "To Powerwall",
@@ -1294,7 +1294,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "From Powerwall",
@@ -1397,7 +1397,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "To Grid",
@@ -1500,7 +1500,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "From Grid",
@@ -1582,7 +1582,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "SELECT fp FROM (SELECT sum(\"from_pw\")  * 0.19 AS fp FROM kwh.http WHERE  $timeFilter tz('America/Los_Angeles'))",
+          "query": "SELECT fp FROM (SELECT sum(\"from_pw\")  * 0.19 AS fp FROM kwh.http WHERE  $timeFilter tz('America/New_York'))",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
@@ -1594,7 +1594,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "SELECT s - (tp + tg) FROM (SELECT sum(\"solar\") * 0.19 AS s,  sum(\"to_pw\")  * 0.19 AS tp, sum(\"to_grid\") * 0.19 AS tg FROM kwh.http WHERE  $timeFilter tz('America/Los_Angeles'))\n",
+          "query": "SELECT s - (tp + tg) FROM (SELECT sum(\"solar\") * 0.19 AS s,  sum(\"to_pw\")  * 0.19 AS tp, sum(\"to_grid\") * 0.19 AS tg FROM kwh.http WHERE  $timeFilter tz('America/New_York'))\n",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series"
@@ -1606,7 +1606,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "SELECT tg FROM (SELECT sum(\"to_pw\")  * 0.19 AS tp, sum(\"solar\") * 0.19 AS s, sum(\"to_grid\") * 0.19 AS tg FROM kwh.http WHERE  $timeFilter tz('America/Los_Angeles'))\n",
+          "query": "SELECT tg FROM (SELECT sum(\"to_pw\")  * 0.19 AS tp, sum(\"solar\") * 0.19 AS s, sum(\"to_grid\") * 0.19 AS tg FROM kwh.http WHERE  $timeFilter tz('America/New_York'))\n",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series"
@@ -1618,7 +1618,7 @@
             "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
-          "query": "SELECT tg + (s - tp - tg ) + fp FROM (SELECT sum(\"to_pw\")  * 0.19 AS tp, sum(\"solar\") * 0.19 AS s, sum(\"to_grid\") * 0.19 AS tg, sum(\"from_pw\") * 0.19 AS fp FROM kwh.http WHERE  $timeFilter tz('America/Los_Angeles'))\n",
+          "query": "SELECT tg + (s - tp - tg ) + fp FROM (SELECT sum(\"to_pw\")  * 0.19 AS tp, sum(\"solar\") * 0.19 AS s, sum(\"to_grid\") * 0.19 AS tg, sum(\"from_pw\") * 0.19 AS fp FROM kwh.http WHERE  $timeFilter tz('America/New_York'))\n",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series"
@@ -1719,7 +1719,7 @@
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "SELECT  (1+from_solar/abs(from_solar))*from_solar/2  FROM (SELECT integral(solar)/1000/3600 - integral(to_pw)/1000/3600 - integral(to_grid)/1000/3600  AS from_solar FROM autogen.http WHERE  $timeFilter tz('America/Los_Angeles'))",
+          "query": "SELECT  (1+from_solar/abs(from_solar))*from_solar/2  FROM (SELECT integral(solar)/1000/3600 - integral(to_pw)/1000/3600 - integral(to_grid)/1000/3600  AS from_solar FROM autogen.http WHERE  $timeFilter tz('America/New_York'))",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series"
@@ -1760,7 +1760,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "From Grid",
@@ -1798,7 +1798,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "title": "Self-Powered",
@@ -2108,7 +2108,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "thresholds": [],
@@ -2243,7 +2243,7 @@
               "value": "0"
             }
           ],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "thresholds": [],
@@ -2372,7 +2372,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "thresholds": [],
@@ -2509,7 +2509,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "To Grid",
@@ -2558,7 +2558,7 @@
             ]
           ],
           "tags": [],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "thresholds": [],
@@ -2710,7 +2710,7 @@
               "value": "0"
             }
           ],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         },
         {
           "alias": "Home Usage",
@@ -2759,7 +2759,7 @@
               "value": "0"
             }
           ],
-          "tz": "America/Los_Angeles"
+          "tz": "America/New_York"
         }
       ],
       "thresholds": [],

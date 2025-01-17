@@ -143,7 +143,7 @@ You will want to set your local timezone by editing `pypowerwall.env`, `telegraf
 
   ```bash
     # Replace with your timezone
-    bash tz.sh "America/Los_Angeles"
+    bash tz.sh "America/New_York"
   ```
 
 ### Docker Containers
@@ -154,7 +154,7 @@ You will want to set your local timezone by editing `pypowerwall.env`, `telegraf
       PW_EMAIL=email@example.com
       PW_PASSWORD=password
       PW_HOST=192.168.91.1
-      PW_TIMEZONE=America/Los_Angeles
+      PW_TIMEZONE=America/New_York
       PW_DEBUG=no
   ```
 
@@ -193,7 +193,7 @@ You will want to set your local timezone by editing `pypowerwall.env`, `telegraf
     docker exec -it influxdb influx -import -path=/var/lib/influxdb/influxdb.sql
   ```
 
-Note: It can take a while for InfluxDB to start.  Also the influxdb.sql file is set to use `America/Los_Angeles` as timezone. Use the `tz.sh` script or manually update the database commands above to replace `America/Los_Angeles` with your own timezone.
+Note: It can take a while for InfluxDB to start.  Also the influxdb.sql file is set to use `America/New_York` as timezone. Use the `tz.sh` script or manually update the database commands above to replace `America/New_York` with your own timezone.
 
 ### Grafana Setup
 
@@ -226,7 +226,7 @@ Note: It can take a while for InfluxDB to start.  Also the influxdb.sql file is 
 
 ### Notes
 
-* The database queries are set to use `America/Los_Angeles` as the timezone. Remember to edit the database commands [influxdb.sql](influxdb/influxdb.sql) with your own timezone. During import of dashboards into Grafana you'll be prompted to enter your timezone for queries.
+* The database queries are set to use `America/New_York` as the timezone. Remember to edit the database commands [influxdb.sql](influxdb/influxdb.sql) with your own timezone. During import of dashboards into Grafana you'll be prompted to enter your timezone for queries.
 
 ### Upgrading
 
@@ -343,8 +343,8 @@ Example of a working `pypowerwall.env` file for Powerwall 3:
 PW_EMAIL=
 PW_PASSWORD=
 PW_HOST=192.168.91.1
-PW_TIMEZONE=America/Los_Angeles
-TZ=America/Los_Angeles
+PW_TIMEZONE=America/New_York
+TZ=America/New_York
 PW_DEBUG=no
 PW_STYLE=grafana-dark
 PW_GW_PWD=<YOUR_PW3_PASSWORD> 
