@@ -139,3 +139,18 @@ services:
             timeout: 10s
             retries: 3
             start_period: 60s
+
+    chronograf:
+        image: chronograf:1.9
+        container_name: chronograf
+        hostname: chronograf
+        restart: unless-stopped
+        user: "${PWD_USER:-1000:1000}"
+        network_mode: host
+        # Persist Chronograf’s own data (e.g., dashboards, users)
+        volumes:
+            - type: bind
+              source: ./chronograf
+              target: /var/lib/chronograf
+        depends_on:
+            - influxdb
