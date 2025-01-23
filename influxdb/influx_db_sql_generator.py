@@ -1,3 +1,4 @@
+from typing import Final, List
 from jinja2 import Environment, FileSystemLoader
 import os
 
@@ -30,6 +31,7 @@ BEGIN
     GROUP BY time(1h), month, year tz('America/New_York')
 END
 
+
 CREATE CONTINUOUS QUERY cq_grid ON powerwall
 BEGIN
     SELECT min(grid_status) AS grid_status 
@@ -39,6 +41,7 @@ BEGIN
     ) GROUP BY time(1m), month, year fill(linear)
 END
 
+
 CREATE CONTINUOUS QUERY cq_alerts ON powerwall RESAMPLE FOR 2m
 BEGIN
     SELECT max(*)
@@ -47,6 +50,7 @@ BEGIN
         SELECT * FROM raw.alerts
     ) GROUP BY time(1m), month, year
 END
+
 
 # Temporal Frequency Queries
 {% for query in temporal_frequency_queries %}
@@ -74,7 +78,6 @@ END
 # Temperature queries
 {% for query in temperature_queries %}
 CREATE CONTINUOUS QUERY {{ query.name }} ON {{ query.database }}
-RESAMPLE EVERY {{ query.resample_every }}
 BEGIN
     SELECT {{ query.select_clause }}
     INTO {{ query.into_clause }}
@@ -275,132 +278,82 @@ temperature_queries = [
     }
 ]
 
-string_queries = [
-    {
-        "name": "cq_strings",
-        "fields": [
-            "A_Current", "A_Power", "A_Voltage",
-            "B_Current", "B_Power", "B_Voltage",
-            "C_Current", "C_Power", "C_Voltage",
-            "D_Current", "D_Power", "D_Voltage",
+
+def generate_string_queries():
+    # Each entry describes:
+    #   1) the range of i-values to which it applies
+    #   2) the letters to use (e.g. ABCD or EF)
+    #   3) a function for computing suffix (could be "", a number, etc.)
+    #   4) which metrics to append
+    
+    METRICS: Final[List[str]] = ["_Current", "_Power", "_Voltage"]
+
+    configs = [
+        {
+            "range": range(0, 6),
+            "letters": "ABCD",
+            "suffix_func": lambda i: "" if i == 0 else str(i)
+        },
+        {
+            "range": range(6, 11),
+            "letters": "EF",
+            "suffix_func": lambda i: str(i - 5)  # i=6 => '1', ..., i=10 => '5'
+        },
+        {
+            "range": range(11, 12),
+            "letters": "EF",
+            "suffix_func": lambda i: ""
+        },
+        {
+            "range": range(12, 13),
+            "letters": "ABCD",
+            "suffix_func": lambda i: "_JG"
+        },
+        {
+            "range": range(13, 14),
+            "letters": "ABCD",
+            "suffix_func": lambda i: "_N1"
+        }
+    ]
+
+    queries = []
+    for i in range(14):  # We have 0..13 inclusive
+        # 1) find which config applies to i
+        config = next(c for c in configs if i in c["range"])
+
+        # 2) extract letters, suffix, and metrics
+        letters = config["letters"]
+        suffix = config["suffix_func"](i)
+        metrics = METRICS
+
+        # 3) build the fields
+        fields = [
+            f"{letter}{suffix}{metric}"
+            for letter in letters
+            for metric in metrics
         ]
-    },
-    {
-        "name": "cq_strings1",
-        "fields": [
-            "A1_Current", "A1_Power", "A1_Voltage",
-            "B1_Current", "B1_Power", "B1_Voltage",
-            "C1_Current", "C1_Power", "C1_Voltage",
-            "D1_Current", "D1_Power", "D1_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings2",
-        "fields": [
-            "A2_Current", "A2_Power", "A2_Voltage",
-            "B2_Current", "B2_Power", "B2_Voltage",
-            "C2_Current", "C2_Power", "C2_Voltage",
-            "D2_Current", "D2_Power", "D2_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings3",
-        "fields": [
-            "A3_Current", "A3_Power", "A3_Voltage",
-            "B3_Current", "B3_Power", "B3_Voltage",
-            "C3_Current", "C3_Power", "C3_Voltage",
-            "D3_Current", "D3_Power", "D3_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings4",
-        "fields": [
-            "A4_Current", "A4_Power", "A4_Voltage",
-            "B4_Current", "B4_Power", "B4_Voltage",
-            "C4_Current", "C4_Power", "C4_Voltage",
-            "D4_Current", "D4_Power", "D4_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings5",
-        "fields": [
-            "A5_Current", "A5_Power", "A5_Voltage",
-            "B5_Current", "B5_Power", "B5_Voltage",
-            "C5_Current", "C5_Power", "C5_Voltage",
-            "D5_Current", "D5_Power", "D5_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings6",
-        "fields": [
-            "E1_Current", "E1_Power", "E1_Voltage",
-            "F1_Current", "F1_Power", "F1_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings7",
-        "fields": [
-            "E2_Current", "E2_Power", "E2_Voltage",
-            "F2_Current", "F2_Power", "F2_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings8",
-        "fields": [
-            "E3_Current", "E3_Power", "E3_Voltage",
-            "F3_Current", "F3_Power", "F3_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings9",
-        "fields": [
-            "E4_Current", "E4_Power", "E4_Voltage",
-            "F4_Current", "F4_Power", "F4_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings10",
-        "fields": [
-            "E5_Current", "E5_Power", "E5_Voltage",
-            "F5_Current", "F5_Power", "F5_Voltage",
-        ]
-    },
-    {
-        "name": "cq_strings11",
-        "fields": [
-            "E_Current", "E_Power", "E_Voltage",
-            "F_Current", "F_Power", "F_Voltage",
-        ]
-    },
-]
+
+        # 4) build the query name, e.g. "cq_strings" for i=0 or "cq_strings1" for i=1
+        name_suffix = "" if i == 0 else str(i)
+        name = f"cq_strings{name_suffix}"
+
+        # 5) assemble the final dictionary
+        queries.append({"name": name, "fields": fields})
+
+    return queries
+string_queries = generate_string_queries()
+
 
 inverter_queries = [
     {
         "name": "cq_inverters",
         "database": "powerwall",
         "select_clause": """mean(Inverter1) AS Inverter1,
-            mean(Inverter2) AS Inverter2,
-            mean(Inverter3) AS Inverter3,
-            mean(Inverter4) AS Inverter4""",
+            mean(Inverter2) AS Inverter2""",
         "into_clause": "powerwall.strings.:MEASUREMENT",
         "from_clause": """(
-            SELECT A_Power+B_Power+C_Power+D_Power+E_Power+F_Power      AS Inverter1,
-                A1_Power+B1_Power+C1_Power+D1_Power+E1_Power+F1_Power   AS Inverter2,
-                A2_Power+B2_Power+C2_Power+D2_Power+E2_Power+F2_Power   AS Inverter3,
-                A3_Power+B3_Power+C3_Power+D3_Power+E3_Power+F3_Power   AS Inverter4
-            FROM raw.http
-        )""",
-        "group_by_clause": "time(1m), month, year fill(linear)"
-    },
-    {
-        "name": "cq_inverters1",
-        "database": "powerwall",
-        "select_clause": """mean(Inverter5) AS Inverter5,
-            mean(Inverter6) AS Inverter6""",
-        "into_clause": "powerwall.strings.:MEASUREMENT",
-        "from_clause": """(
-            SELECT A4_Power+B4_Power+C4_Power+D4_Power+E4_Power+F4_Power   AS Inverter5,
-                A5_Power+B5_Power+C5_Power+D5_Power+E5_Power+F5_Power   AS Inverter6
+            SELECT A_JG_Power + B_JG_Power + C_JG_Power + D_JG_Power AS Inverter1,
+                A_N1_Power + B_N1_Power + C_N1_Power + D_N1_Power AS Inverter2
             FROM raw.http
         )""",
         "group_by_clause": "time(1m), month, year fill(linear)"
@@ -809,16 +762,61 @@ data = {
     "pod_queries": pod_queries
 }
 
-# Render the template
-output = template.render(data)
 
-# Write the output to a file
-with open('output.txt', 'w') as f:
-    f.write(output)
+def collapse_sql_to_single_lines(input_file, output_file):
+    """
+    Reads multi-line continuous queries from `input_file` and writes them
+    as single-line queries into `output_file`.
+    """
+    with open(input_file, 'r') as f:
+        lines = f.read().splitlines()
+    
+    queries = []
+    current_query_lines = []
+    in_query = False
 
-print("File generated successfully!")
+    for line in lines:
+        stripped = line.strip()
 
+        # Skip empty or comment lines (optional: remove if you want to keep comments)
+        if not stripped or stripped.startswith('#'):
+            continue
 
+        # Detect start of a query (if you want to be more precise, you can test for
+        # "CREATE CONTINUOUS QUERY" or similar patterns)
+        if stripped.upper().startswith("CREATE CONTINUOUS QUERY"):
+            in_query = True
+
+        if in_query:
+            current_query_lines.append(stripped)
+
+        # Detect end of a query
+        if stripped.upper() == "END":
+            # Collapse current query into a single line
+            single_line_query = " ".join(current_query_lines)
+            queries.append(single_line_query)
+            current_query_lines = []
+            in_query = False
+
+    # Write out single-line queries
+    with open(output_file, 'w') as out:
+        for query in queries:
+            out.write(query + "\n")
+
+def main() -> None:
+    # Render the template
+    output = template.render(data)
+
+    # Write the output to a file
+    with open('output.txt', 'w') as f:
+        f.write(output)
+        
+    collapse_sql_to_single_lines("output.txt", "collapsed.txt")
+
+    print("File generated successfully!")
+
+if __name__ == "__main__":
+    main()
 
 # continuous_queries = [
 #     {
@@ -961,4 +959,105 @@ print("File generated successfully!")
 #         'group_by': 'time(1m), month, year',
 #         'fill': ''
 #     }
+# ]
+
+
+
+# string_queries = [
+#     {
+#         "name": "cq_strings",
+#         "fields": [
+#             "A_Current", "A_Power", "A_Voltage",
+#             "B_Current", "B_Power", "B_Voltage",
+#             "C_Current", "C_Power", "C_Voltage",
+#             "D_Current", "D_Power", "D_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings1",
+#         "fields": [
+#             "A1_Current", "A1_Power", "A1_Voltage",
+#             "B1_Current", "B1_Power", "B1_Voltage",
+#             "C1_Current", "C1_Power", "C1_Voltage",
+#             "D1_Current", "D1_Power", "D1_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings2",
+#         "fields": [
+#             "A2_Current", "A2_Power", "A2_Voltage",
+#             "B2_Current", "B2_Power", "B2_Voltage",
+#             "C2_Current", "C2_Power", "C2_Voltage",
+#             "D2_Current", "D2_Power", "D2_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings3",
+#         "fields": [
+#             "A3_Current", "A3_Power", "A3_Voltage",
+#             "B3_Current", "B3_Power", "B3_Voltage",
+#             "C3_Current", "C3_Power", "C3_Voltage",
+#             "D3_Current", "D3_Power", "D3_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings4",
+#         "fields": [
+#             "A4_Current", "A4_Power", "A4_Voltage",
+#             "B4_Current", "B4_Power", "B4_Voltage",
+#             "C4_Current", "C4_Power", "C4_Voltage",
+#             "D4_Current", "D4_Power", "D4_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings5",
+#         "fields": [
+#             "A5_Current", "A5_Power", "A5_Voltage",
+#             "B5_Current", "B5_Power", "B5_Voltage",
+#             "C5_Current", "C5_Power", "C5_Voltage",
+#             "D5_Current", "D5_Power", "D5_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings6",
+#         "fields": [
+#             "E1_Current", "E1_Power", "E1_Voltage",
+#             "F1_Current", "F1_Power", "F1_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings7",
+#         "fields": [
+#             "E2_Current", "E2_Power", "E2_Voltage",
+#             "F2_Current", "F2_Power", "F2_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings8",
+#         "fields": [
+#             "E3_Current", "E3_Power", "E3_Voltage",
+#             "F3_Current", "F3_Power", "F3_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings9",
+#         "fields": [
+#             "E4_Current", "E4_Power", "E4_Voltage",
+#             "F4_Current", "F4_Power", "F4_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings10",
+#         "fields": [
+#             "E5_Current", "E5_Power", "E5_Voltage",
+#             "F5_Current", "F5_Power", "F5_Voltage",
+#         ]
+#     },
+#     {
+#         "name": "cq_strings11",
+#         "fields": [
+#             "E_Current", "E_Power", "E_Voltage",
+#             "F_Current", "F_Power", "F_Voltage",
+#         ]
+#     },
 # ]
