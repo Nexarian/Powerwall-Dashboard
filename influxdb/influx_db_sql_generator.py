@@ -307,12 +307,12 @@ def generate_string_queries():
         {
             "range": range(12, 13),
             "letters": "ABCD",
-            "suffix_func": lambda i: "_JG"
+            "suffix_func": lambda i: "_1JG"
         },
         {
             "range": range(13, 14),
             "letters": "ABCD",
-            "suffix_func": lambda i: "_N1"
+            "suffix_func": lambda i: "_2N1"
         }
     ]
 
@@ -349,11 +349,28 @@ inverter_queries = [
         "name": "cq_inverters",
         "database": "powerwall",
         "select_clause": """mean(Inverter1) AS Inverter1,
-            mean(Inverter2) AS Inverter2""",
+            mean(Inverter2) AS Inverter2,
+            mean(Inverter3) AS Inverter3,
+            mean(Inverter4) AS Inverter4""",
         "into_clause": "powerwall.strings.:MEASUREMENT",
         "from_clause": """(
-            SELECT A_JG_Power + B_JG_Power + C_JG_Power + D_JG_Power AS Inverter1,
-                A_N1_Power + B_N1_Power + C_N1_Power + D_N1_Power AS Inverter2
+            SELECT A_Power+B_Power+C_Power+D_Power+E_Power+F_Power      AS Inverter1,
+                A1_Power+B1_Power+C1_Power+D1_Power+E1_Power+F1_Power   AS Inverter2,
+                A2_Power+B2_Power+C2_Power+D2_Power+E2_Power+F2_Power   AS Inverter3,
+                A3_Power+B3_Power+C3_Power+D3_Power+E3_Power+F3_Power   AS Inverter4
+            FROM raw.http
+        )""",
+        "group_by_clause": "time(1m), month, year fill(linear)"
+    },
+    {
+        "name": "cq_inverters1",
+        "database": "powerwall",
+        "select_clause": """mean(Inverter5) AS Inverter5,
+            mean(Inverter6) AS Inverter6""",
+        "into_clause": "powerwall.strings.:MEASUREMENT",
+        "from_clause": """(
+            SELECT A4_Power+B4_Power+C4_Power+D4_Power+E4_Power+F4_Power   AS Inverter5,
+                A5_Power+B5_Power+C5_Power+D5_Power+E5_Power+F5_Power   AS Inverter6
             FROM raw.http
         )""",
         "group_by_clause": "time(1m), month, year fill(linear)"
@@ -784,14 +801,20 @@ def collapse_sql_to_single_lines(input_file, output_file):
 
         # Detect start of a query (if you want to be more precise, you can test for
         # "CREATE CONTINUOUS QUERY" or similar patterns)
-        if stripped.upper().startswith("CREATE CONTINUOUS QUERY"):
+        upper = stripped.upper()
+
+        if "RETENTION" in upper and not in_query:
+            queries.append(upper)
+            continue
+
+        if upper.startswith("CREATE CONTINUOUS QUERY"):
             in_query = True
 
         if in_query:
             current_query_lines.append(stripped)
 
         # Detect end of a query
-        if stripped.upper() == "END":
+        if upper == "END":
             # Collapse current query into a single line
             single_line_query = " ".join(current_query_lines)
             queries.append(single_line_query)
