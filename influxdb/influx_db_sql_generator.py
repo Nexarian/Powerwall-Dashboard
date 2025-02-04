@@ -87,7 +87,7 @@ END
 {% endfor %}
 
 {% for query in string_queries %}
-CREATE CONTINUOUS QUERY {{ query.name }} ON powerwall
+CREATE CONTINUOUS QUERY {{ query.name }} ON {{ query.database }}
 BEGIN
     SELECT
     {%- for field in query.fields %}
@@ -278,6 +278,23 @@ temperature_queries = [
     }
 ]
 
+string_configs = [
+    {
+        "range": range(0, 6),
+        "letters": "ABCDEF",
+        "suffix_func": lambda i: "" if i == 0 else str(i)
+    },
+    {
+        "range": range(6, 7),
+        "letters": "ABCD",
+        "suffix_func": lambda i: "_1JG"
+    },
+    {
+        "range": range(7, 9),
+        "letters": "ABCD",
+        "suffix_func": lambda i: "_2N1"
+    }
+]
 
 def generate_string_queries():
     # Each entry describes:
@@ -288,38 +305,13 @@ def generate_string_queries():
     
     METRICS: Final[List[str]] = ["_Current", "_Power", "_Voltage"]
 
-    configs = [
-        {
-            "range": range(0, 6),
-            "letters": "ABCD",
-            "suffix_func": lambda i: "" if i == 0 else str(i)
-        },
-        {
-            "range": range(6, 11),
-            "letters": "EF",
-            "suffix_func": lambda i: str(i - 5)  # i=6 => '1', ..., i=10 => '5'
-        },
-        {
-            "range": range(11, 12),
-            "letters": "EF",
-            "suffix_func": lambda i: ""
-        },
-        {
-            "range": range(12, 13),
-            "letters": "ABCD",
-            "suffix_func": lambda i: "_1JG"
-        },
-        {
-            "range": range(13, 14),
-            "letters": "ABCD",
-            "suffix_func": lambda i: "_2N1"
-        }
-    ]
+    # Find the maximum extent of the ranges
 
     queries = []
-    for i in range(14):  # We have 0..13 inclusive
+    max_extent = max(num for cfg in string_configs for num in cfg["range"])
+    for i in range(max_extent):
         # 1) find which config applies to i
-        config = next(c for c in configs if i in c["range"])
+        config = next(c for c in string_configs if i in c["range"])
 
         # 2) extract letters, suffix, and metrics
         letters = config["letters"]
@@ -334,48 +326,77 @@ def generate_string_queries():
         ]
 
         # 4) build the query name, e.g. "cq_strings" for i=0 or "cq_strings1" for i=1
-        name_suffix = "" if i == 0 else str(i)
-        name = f"cq_strings{name_suffix}"
+        name = f"cq_strings{i}"
 
         # 5) assemble the final dictionary
-        queries.append({"name": name, "fields": fields})
+        queries.append({
+            "name": name,
+            "database": "powerwall",
+            "fields": fields
+        })
 
     return queries
 string_queries = generate_string_queries()
 
+def generate_inverter_queries():
+    queries = []
+    max_extent = max(num for cfg in string_configs for num in cfg["range"])
+    for i in range(max_extent):
+        config = next(c for c in string_configs if i in c["range"])
+        inverter = f"Inverter{i}"
+        letters = config["letters"]
+        suffix = config["suffix_func"](i)
 
-inverter_queries = [
-    {
-        "name": "cq_inverters",
-        "database": "powerwall",
-        "select_clause": """mean(Inverter1) AS Inverter1,
-            mean(Inverter2) AS Inverter2,
-            mean(Inverter3) AS Inverter3,
-            mean(Inverter4) AS Inverter4""",
-        "into_clause": "powerwall.strings.:MEASUREMENT",
-        "from_clause": """(
-            SELECT A_Power+B_Power+C_Power+D_Power+E_Power+F_Power      AS Inverter1,
-                A1_Power+B1_Power+C1_Power+D1_Power+E1_Power+F1_Power   AS Inverter2,
-                A2_Power+B2_Power+C2_Power+D2_Power+E2_Power+F2_Power   AS Inverter3,
-                A3_Power+B3_Power+C3_Power+D3_Power+E3_Power+F3_Power   AS Inverter4
-            FROM raw.http
-        )""",
-        "group_by_clause": "time(1m), month, year fill(linear)"
-    },
-    {
-        "name": "cq_inverters1",
-        "database": "powerwall",
-        "select_clause": """mean(Inverter5) AS Inverter5,
-            mean(Inverter6) AS Inverter6""",
-        "into_clause": "powerwall.strings.:MEASUREMENT",
-        "from_clause": """(
-            SELECT A4_Power+B4_Power+C4_Power+D4_Power+E4_Power+F4_Power   AS Inverter5,
-                A5_Power+B5_Power+C5_Power+D5_Power+E5_Power+F5_Power   AS Inverter6
-            FROM raw.http
-        )""",
-        "group_by_clause": "time(1m), month, year fill(linear)"
-    }
-]
+        fields = [
+            f"{letter}{suffix}_Power"
+            for letter in letters
+        ]
+
+        queries.append({
+            "name": f"cq_inverters{i}",
+            "database": "powerwall",
+            "select_clause": f"mean({inverter}) AS {inverter}",
+            "into_clause": "powerwall.strings.:MEASUREMENT",
+            "from_clause": f"(SELECT {'+'.join(fields)} AS {inverter} FROM raw.http)",
+            "group_by_clause": "time(1m), month, year fill(linear)"
+        })
+
+    return queries
+inverter_queries = generate_inverter_queries()
+
+# inverter_queries = [
+#     {
+#         "name": "cq_inverters",
+#         "database": "powerwall",
+#         "select_clause": """
+#             mean(Inverter1) AS Inverter1,
+#             mean(Inverter2) AS Inverter2,
+#             mean(Inverter3) AS Inverter3,
+#             mean(Inverter4) AS Inverter4""",
+#         "into_clause": "powerwall.strings.:MEASUREMENT",
+#         "from_clause": """(
+#             SELECT A_Power+B_Power+C_Power+D_Power+E_Power+F_Power AS Inverter1,
+#                 A1_Power+B1_Power+C1_Power+D1_Power+E1_Power+F1_Power AS Inverter2,
+#                 A2_Power+B2_Power+C2_Power+D2_Power+E2_Power+F2_Power AS Inverter3,
+#                 A3_Power+B3_Power+C3_Power+D3_Power+E3_Power+F3_Power AS Inverter4
+#             FROM raw.http
+#         )""",
+#         "group_by_clause": "time(1m), month, year fill(linear)"
+#     },
+#     {
+#         "name": "cq_inverters1",
+#         "database": "powerwall",
+#         "select_clause": """mean(Inverter5) AS Inverter5,
+#             mean(Inverter6) AS Inverter6""",
+#         "into_clause": "powerwall.strings.:MEASUREMENT",
+#         "from_clause": """(
+#             SELECT A4_Power+B4_Power+C4_Power+D4_Power+E4_Power+F4_Power AS Inverter5,
+#                 A5_Power+B5_Power+C5_Power+D5_Power+E5_Power+F5_Power AS Inverter6
+#             FROM raw.http
+#         )""",
+#         "group_by_clause": "time(1m), month, year fill(linear)"
+#     }
+# ]
 
 vital_queries = queries = [
     {
@@ -778,7 +799,6 @@ data = {
     "vital_queries": vital_queries,
     "pod_queries": pod_queries
 }
-
 
 def collapse_sql_to_single_lines(input_file, output_file):
     """
