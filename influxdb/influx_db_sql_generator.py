@@ -824,7 +824,7 @@ def collapse_sql_to_single_lines(input_file, output_file):
         upper = stripped.upper()
 
         if "RETENTION" in upper and not in_query:
-            queries.append(upper)
+            queries.append(stripped)
             continue
 
         if upper.startswith("CREATE CONTINUOUS QUERY"):
