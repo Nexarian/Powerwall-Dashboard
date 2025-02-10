@@ -1,6 +1,7 @@
-from typing import Final, List
-from jinja2 import Environment, FileSystemLoader
 import os
+from typing import Final, List
+
+from jinja2 import Environment, FileSystemLoader
 
 # Create a Jinja2 environment
 env = Environment(loader=FileSystemLoader(os.path.dirname(__file__)))
@@ -127,11 +128,6 @@ BEGIN
     FROM {{ query.from_clause }}
     GROUP BY {{ query.group_by_clause }}
 END
-{% endfor %}
-
-
-{% for query in continuous_queries %}
-CREATE CONTINUOUS QUERY {{ query.name }} ON powerwall {{ query.resample }}BEGIN {{ query.select }} INTO {{ query.into }} FROM ({{ query.from }}) GROUP BY {{ query.group_by }} {{ query.fill }} END
 {% endfor %}
 """
 
@@ -682,85 +678,93 @@ pod_queries = [
     {
         "name": "cq_pod1",
         "database": "powerwall",
-        "select_clause": """mean(PW1_POD_nom_energy_remaining) AS PW1_POD_nom_energy_remaining,
-    mean(PW2_POD_nom_energy_remaining) AS PW2_POD_nom_energy_remaining,
-    mean(PW3_POD_nom_energy_remaining) AS PW3_POD_nom_energy_remaining,
-    mean(PW4_POD_nom_energy_remaining) AS PW4_POD_nom_energy_remaining,
-    mean(PW5_POD_nom_energy_remaining) AS PW5_POD_nom_energy_remaining,
-    mean(PW6_POD_nom_energy_remaining) AS PW6_POD_nom_energy_remaining""",
+        "select_clause": """
+            mean(PW1_POD_nom_energy_remaining) AS PW1_POD_nom_energy_remaining,
+            mean(PW2_POD_nom_energy_remaining) AS PW2_POD_nom_energy_remaining,
+            mean(PW3_POD_nom_energy_remaining) AS PW3_POD_nom_energy_remaining,
+            mean(PW4_POD_nom_energy_remaining) AS PW4_POD_nom_energy_remaining,
+            mean(PW5_POD_nom_energy_remaining) AS PW5_POD_nom_energy_remaining,
+            mean(PW6_POD_nom_energy_remaining) AS PW6_POD_nom_energy_remaining
+        """,
         "into_clause": "powerwall.pod.:MEASUREMENT",
         "from_clause": """(
-    SELECT PW1_POD_nom_energy_remaining,
-           PW2_POD_nom_energy_remaining,
-           PW3_POD_nom_energy_remaining,
-           PW4_POD_nom_energy_remaining,
-           PW5_POD_nom_energy_remaining,
-           PW6_POD_nom_energy_remaining
-    FROM raw.http
-)""",
+            SELECT PW1_POD_nom_energy_remaining,
+                PW2_POD_nom_energy_remaining,
+                PW3_POD_nom_energy_remaining,
+                PW4_POD_nom_energy_remaining,
+                PW5_POD_nom_energy_remaining,
+                PW6_POD_nom_energy_remaining
+            FROM raw.http
+        )""",
         "group_by_clause": "time(1m), month, year fill(linear)",
     },
     {
         "name": "cq_pod1b",
         "database": "powerwall",
-        "select_clause": """mean(PW7_POD_nom_energy_remaining) AS PW7_POD_nom_energy_remaining,
-    mean(PW8_POD_nom_energy_remaining) AS PW8_POD_nom_energy_remaining,
-    mean(PW9_POD_nom_energy_remaining) AS PW9_POD_nom_energy_remaining,
-    mean(PW10_POD_nom_energy_remaining) AS PW10_POD_nom_energy_remaining,
-    mean(PW11_POD_nom_energy_remaining) AS PW11_POD_nom_energy_remaining,
-    mean(PW12_POD_nom_energy_remaining) AS PW12_POD_nom_energy_remaining""",
+        "select_clause": """
+            mean(PW7_POD_nom_energy_remaining) AS PW7_POD_nom_energy_remaining,
+            mean(PW8_POD_nom_energy_remaining) AS PW8_POD_nom_energy_remaining,
+            mean(PW9_POD_nom_energy_remaining) AS PW9_POD_nom_energy_remaining,
+            mean(PW10_POD_nom_energy_remaining) AS PW10_POD_nom_energy_remaining,
+            mean(PW11_POD_nom_energy_remaining) AS PW11_POD_nom_energy_remaining,
+            mean(PW12_POD_nom_energy_remaining) AS PW12_POD_nom_energy_remaining
+        """,
         "into_clause": "powerwall.pod.:MEASUREMENT",
         "from_clause": """(
-    SELECT PW7_POD_nom_energy_remaining,
-           PW8_POD_nom_energy_remaining,
-           PW9_POD_nom_energy_remaining,
-           PW10_POD_nom_energy_remaining,
-           PW11_POD_nom_energy_remaining,
-           PW12_POD_nom_energy_remaining
-    FROM raw.http
-)""",
+            SELECT PW7_POD_nom_energy_remaining,
+                PW8_POD_nom_energy_remaining,
+                PW9_POD_nom_energy_remaining,
+                PW10_POD_nom_energy_remaining,
+                PW11_POD_nom_energy_remaining,
+                PW12_POD_nom_energy_remaining
+            FROM raw.http
+        )""",
         "group_by_clause": "time(1m), month, year fill(linear)",
     },
     {
         "name": "cq_pod2",
         "database": "powerwall",
-        "select_clause": """mean(PW1_POD_nom_full_pack_energy) AS PW1_POD_nom_full_pack_energy,
-    mean(PW2_POD_nom_full_pack_energy) AS PW2_POD_nom_full_pack_energy,
-    mean(PW3_POD_nom_full_pack_energy) AS PW3_POD_nom_full_pack_energy,
-    mean(PW4_POD_nom_full_pack_energy) AS PW4_POD_nom_full_pack_energy,
-    mean(PW5_POD_nom_full_pack_energy) AS PW5_POD_nom_full_pack_energy,
-    mean(PW6_POD_nom_full_pack_energy) AS PW6_POD_nom_full_pack_energy""",
+        "select_clause": """
+            mean(PW1_POD_nom_full_pack_energy) AS PW1_POD_nom_full_pack_energy,
+            mean(PW2_POD_nom_full_pack_energy) AS PW2_POD_nom_full_pack_energy,
+            mean(PW3_POD_nom_full_pack_energy) AS PW3_POD_nom_full_pack_energy,
+            mean(PW4_POD_nom_full_pack_energy) AS PW4_POD_nom_full_pack_energy,
+            mean(PW5_POD_nom_full_pack_energy) AS PW5_POD_nom_full_pack_energy,
+            mean(PW6_POD_nom_full_pack_energy) AS PW6_POD_nom_full_pack_energy
+        """,
         "into_clause": "powerwall.pod.:MEASUREMENT",
         "from_clause": """(
-    SELECT PW1_POD_nom_full_pack_energy,
-           PW2_POD_nom_full_pack_energy,
-           PW3_POD_nom_full_pack_energy,
-           PW4_POD_nom_full_pack_energy,
-           PW5_POD_nom_full_pack_energy,
-           PW6_POD_nom_full_pack_energy
-    FROM raw.http
-)""",
+            SELECT PW1_POD_nom_full_pack_energy,
+                PW2_POD_nom_full_pack_energy,
+                PW3_POD_nom_full_pack_energy,
+                PW4_POD_nom_full_pack_energy,
+                PW5_POD_nom_full_pack_energy,
+                PW6_POD_nom_full_pack_energy
+            FROM raw.http
+        )""",
         "group_by_clause": "time(1m), month, year fill(linear)",
     },
     {
         "name": "cq_pod2b",
         "database": "powerwall",
-        "select_clause": """mean(PW7_POD_nom_full_pack_energy) AS PW7_POD_nom_full_pack_energy,
-    mean(PW8_POD_nom_full_pack_energy) AS PW8_POD_nom_full_pack_energy,
-    mean(PW9_POD_nom_full_pack_energy) AS PW9_POD_nom_full_pack_energy,
-    mean(PW10_POD_nom_full_pack_energy) AS PW10_POD_nom_full_pack_energy,
-    mean(PW11_POD_nom_full_pack_energy) AS PW11_POD_nom_full_pack_energy,
-    mean(PW12_POD_nom_full_pack_energy) AS PW12_POD_nom_full_pack_energy""",
+        "select_clause": """
+            mean(PW7_POD_nom_full_pack_energy) AS PW7_POD_nom_full_pack_energy,
+            mean(PW8_POD_nom_full_pack_energy) AS PW8_POD_nom_full_pack_energy,
+            mean(PW9_POD_nom_full_pack_energy) AS PW9_POD_nom_full_pack_energy,
+            mean(PW10_POD_nom_full_pack_energy) AS PW10_POD_nom_full_pack_energy,
+            mean(PW11_POD_nom_full_pack_energy) AS PW11_POD_nom_full_pack_energy,
+            mean(PW12_POD_nom_full_pack_energy) AS PW12_POD_nom_full_pack_energy
+        """,
         "into_clause": "powerwall.pod.:MEASUREMENT",
         "from_clause": """(
-    SELECT PW7_POD_nom_full_pack_energy,
-           PW8_POD_nom_full_pack_energy,
-           PW9_POD_nom_full_pack_energy,
-           PW10_POD_nom_full_pack_energy,
-           PW11_POD_nom_full_pack_energy,
-           PW12_POD_nom_full_pack_energy
-    FROM raw.http
-)""",
+            SELECT PW7_POD_nom_full_pack_energy,
+                PW8_POD_nom_full_pack_energy,
+                PW9_POD_nom_full_pack_energy,
+                PW10_POD_nom_full_pack_energy,
+                PW11_POD_nom_full_pack_energy,
+                PW12_POD_nom_full_pack_energy
+            FROM raw.http
+        )""",
         "group_by_clause": "time(1m), month, year fill(linear)",
     },
     {
@@ -769,22 +773,24 @@ pod_queries = [
         "select_clause": "mean(backup_reserve_percent) AS backup_reserve_percent",
         "into_clause": "powerwall.pod.:MEASUREMENT",
         "from_clause": """(
-    SELECT backup_reserve_percent
-    FROM raw.http
-)""",
+            SELECT backup_reserve_percent
+            FROM raw.http
+        )""",
         "group_by_clause": "time(1m), month, year fill(linear)",
     },
     {
         "name": "cq_pod4",
         "database": "powerwall",
-        "select_clause": """mean(nominal_full_pack_energy) AS nominal_full_pack_energy,
-    mean(nominal_energy_remaining) AS nominal_energy_remaining""",
+        "select_clause": """
+            mean(nominal_full_pack_energy) AS nominal_full_pack_energy,
+            mean(nominal_energy_remaining) AS nominal_energy_remaining
+        """,
         "into_clause": "powerwall.pod.:MEASUREMENT",
         "from_clause": """(
-    SELECT nominal_full_pack_energy,
-           nominal_energy_remaining
-    FROM raw.http
-)""",
+            SELECT nominal_full_pack_energy,
+                nominal_energy_remaining
+            FROM raw.http
+        )""",
         "group_by_clause": "time(1m), month, year fill(linear)",
     },
 ]
