@@ -1,4 +1,20 @@
 services:
+    nginx:
+      image: nginx:latest
+      container_name: nginx
+      network_mode: host
+      ports:
+        - "8090:8090"  # Expose port 80 to the host
+      volumes:
+        # Mount the custom Nginx config (make sure nginx.conf is in the same folder as your docker-compose.yml)
+        - type: bind
+          source: ./nginx.conf
+          target: /etc/nginx/conf.d/default.conf
+          read_only: true
+      depends_on:
+        - grafana
+        - pypowerwall
+
     influxdb:
         image: influxdb:1.8
         container_name: influxdb
@@ -28,7 +44,7 @@ services:
             start_period: 60s
 
     pypowerwall:
-        image: jasonacox/pypowerwall:0.12.6.t190
+        image: jasonacox/pypowerwall:0.12.6.t196
         container_name: pypowerwall
         hostname: pypowerwall
         restart: unless-stopped
