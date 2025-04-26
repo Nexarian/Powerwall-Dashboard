@@ -1,0 +1,1 @@
+sudo truncate -s 0 "$(docker inspect --format='{{.LogPath}}' "$(docker ps -q --filter name=pypowerwall)")"
