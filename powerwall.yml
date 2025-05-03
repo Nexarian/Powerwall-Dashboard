@@ -2,9 +2,10 @@ services:
     nginx:
       image: nginx:latest
       container_name: nginx
+      restart: unless-stopped
       network_mode: host
-      ports:
-        - "8090:8090"  # Expose port 80 to the host
+      #ports:
+      #  - "8090:8090"  # Expose port 80 to the host
       volumes:
         # Mount the custom Nginx config (make sure nginx.conf is in the same folder as your docker-compose.yml)
         - type: bind
