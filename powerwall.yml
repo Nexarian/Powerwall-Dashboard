@@ -43,7 +43,7 @@ services:
             start_period: 60s
 
     pypowerwall:
-        image: jasonacox/pypowerwall:0.12.6.t205
+        image: jasonacox/pypowerwall:0.12.6.t212
         container_name: pypowerwall
         hostname: pypowerwall
         restart: unless-stopped
@@ -105,9 +105,8 @@ services:
             timeout: 10s
             retries: 3
             start_period: 30s
-
     grafana:
-        image: grafana/grafana:12.3.1-ubuntu
+        image: grafana/grafana:12.3.3-ubuntu
         container_name: grafana
         hostname: grafana
         restart: unless-stopped

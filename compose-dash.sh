@@ -62,7 +62,7 @@ if docker compose version > /dev/null 2>&1; then
 else
     if docker-compose version > /dev/null 2>&1; then
         # Build Docker (v1)
-        docker-compose -f powerwall.yml $pwextend $@
+        docker-compose -f powerwall.yml --remove-orphans $pwextend $@
     else
         echo "ERROR: docker-compose/docker compose is not available or not running."
         echo "This script requires docker-compose or docker compose."
