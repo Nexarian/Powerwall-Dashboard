@@ -305,8 +305,8 @@ def main():
 
     all_statements = retention + cqs
 
-    # Write collapsed.txt (for influx -import)
-    collapsed_path = os.path.join(SCRIPT_DIR, 'collapsed.sql')
+    # Write influxdb.sql (for influx -import)
+    collapsed_path = os.path.join(SCRIPT_DIR, 'influxdb.sql')
     with open(collapsed_path, 'w') as f:
         f.write("# DDL\n")
         for s in all_statements:
