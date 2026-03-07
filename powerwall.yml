@@ -15,15 +15,15 @@ services:
         - pypowerwall
 
     influxdb:
-        image: influxdb:1.8
+        image: influxdb:1.12.2
         container_name: influxdb
         hostname: influxdb
         restart: unless-stopped
+        user: "${PWD_USER:-1000:1000}"
         ulimits:
             nofile:
                 soft: 65536
                 hard: 65536
-
         network_mode: host
         volumes:
             - type: bind
@@ -43,7 +43,8 @@ services:
             start_period: 60s
 
     pypowerwall:
-        image: jasonacox/pypowerwall:0.12.6.t212
+        #image: nexarian/pypowerwall-nexarian:0.0.2
+        image: nexarian/pypowerwall-nexarian:0.0.1
         container_name: pypowerwall
         hostname: pypowerwall
         restart: unless-stopped
@@ -66,7 +67,7 @@ services:
             start_period: 60s
 
     telegraf:
-        image: telegraf:1.28.2
+        image: telegraf:1.37.3
         container_name: telegraf
         hostname: telegraf
         restart: unless-stopped
@@ -155,7 +156,7 @@ services:
             start_period: 60s
 
     chronograf:
-        image: chronograf:1.9
+        image: chronograf:1.10
         container_name: chronograf
         hostname: chronograf
         restart: unless-stopped
