@@ -5601,7 +5601,7 @@
             [
               {
                 "params": [
-                  "Inverter6"
+                  "Inverter0"
                 ],
                 "type": "field"
               },
@@ -5643,7 +5643,7 @@
             [
               {
                 "params": [
-                  "Inverter7"
+                  "Inverter1"
                 ],
                 "type": "field"
               },
@@ -5663,7 +5663,7 @@
           },
           "hide": false,
           "policy": "strings",
-          "query": "SELECT max(\"Inverter6\") + max(\"Inverter7\") FROM \"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT max(\"Inverter0\") + max(\"Inverter1\") FROM \"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series"
