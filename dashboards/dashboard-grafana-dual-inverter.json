@@ -517,13 +517,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Home Usage",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -560,7 +560,7 @@
           "alias": "Solar Energy",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -596,7 +596,7 @@
           "alias": "Grid Usage",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -641,7 +641,7 @@
           "alias": "Charge",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -703,7 +703,7 @@
           "alias": "Temperature",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -744,7 +744,7 @@
           "alias": "Clouds",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -785,7 +785,7 @@
           "alias": "Feels Like",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -826,7 +826,7 @@
           "alias": "Grid Down",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -888,10 +888,10 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<!-- Center Title Style Override for Powerwall Dashboard -->\n<style>\n/* Make the panel header container use relative positioning */\ndiv[class*=\"-headerContainer\"] {\n  position: relative;\n}\n\n/* Absolutely center the panel title */\ndiv[class*=\"-title\"] {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 1;\n  pointer-events: none;\n}\n\n/* Allow interactions with the title text itself */\ndiv[class*=\"-title\"] * {\n  pointer-events: auto;\n}\n\n/* Push menu button to the right using margin-left: auto */\ndiv[class*=\"-menuItem\"] {\n  margin-left: auto !important;\n}\n\n/* Ensure actions stay on the left side */\ndiv[class*=\"-flexGrow\"] {\n  display: none;\n}\n\n/* Force panel backgrounds transparent (fixes Grafana 10+ transparency) */\n[class*=\"panelContent\"],\n[class*=\"panel-content\"],\n[class*=\"innerContainer\"],\n[class*=\"markdown-html\"],\n[data-testid=\"TextPanel-converted-content\"],\n.panel-container--transparent,\n.react-grid-item > div {\n  background: transparent !important;\n  background-color: transparent !important;\n}\n\n</style>\n<!-- End of Style Override -->\n<!-- pyPowerwall Power Flow Animation -->\n<style>\ndiv.powerDiv {\n      width: 100%;\n      height: 100%;\n      overflow: hidden;\n      background: url(public/img/load_big.gif) center center no-repeat;\n    }\ndiv.firmwareDiv {\n      width: 100%;\n      position: absolute;\n      text-align: center;\n      left: 0;\n      bottom: 0;\n      overflow: hidden;\n    }\niframe.powerFrame {\n      width: 450px;\n      height: 350px;\n      transform: scale(0);\n      transform-origin: center;\n      position: absolute;\n      left: 50%;\n      top: 50%;\n      background-color: #111217 !important;\n      border: none !important;\n      outline: none !important;\n      will-change: transform;\n      backface-visibility: hidden;\n      -webkit-backface-visibility: hidden;\n      -webkit-font-smoothing: antialiased;\n    }\n</style>\n<div class=\"powerDiv\">\n    <iframe id=\"frame8675\" class=\"powerFrame\" src=\"/public/img/grafana_icon.svg\">IFRAME not supported by browser.</iframe>\n</div>\n<div class=\"firmwareDiv\">\n  <p class=\"version\" style=\"color:gray; text-align: center;\">Firmware</p>\n</div>\n<script>\n// Scale Animation when Window is Resized\nfunction scale() {\n  document.querySelectorAll('.powerFrame').forEach(scaled => {\n    parent = scaled.parentNode;\n    ratio = Math.min(1,parent.offsetWidth / scaled.offsetWidth, parent.offsetHeight / scaled.offsetHeight);\n    scaled.style.transform = 'translate(-50%, -50%) scale(' + ratio + ')';\n  })\n}\nwindow.addEventListener('resize', function(e){ scale(); }, false);\n\n// Display Firmware Version\nfunction showversion() {\n    var inverter_ver1 = window.location.protocol + \"//\" + window.location.hostname + \"/api/version8675\";\n    var inverter_ver2 = window.location.protocol + \"//\" + window.location.hostname + \"/api/version8685\";\n    $.when(\n      $.getJSON(inverter_ver1),\n      $.getJSON(inverter_ver2)\n    ).done(function(data1, data2) {\n        var text = `Firmware: 1JG - ${data1[0].version.split(\" \")[0]} and 2N1 - ${data2[0].version.split(\" \")[0]}`;\n        $(\".version\").html(text);\n    });\n    setTimeout(showversion, 60000);\n}\nshowversion();\n\n// Load Animation from pyPowerwall\nvar powerFrame = document.getElementById('frame8675');\npowerFrame.onload = function() {\n  this.parentNode.setAttribute('style','background: none');\n  var iframe = this;\n  try {\n    var doc = iframe.contentDocument || iframe.contentWindow.document;\n    if (doc && doc.head) {\n      var s = doc.createElement('style');\n      s.textContent = '*{background-color:#111217!important}';\n      doc.head.appendChild(s);\n      document.title = 'PW: CSS-INJECTED';\n    } else {\n      document.title = 'PW: NO-DOC-HEAD';\n    }\n  } catch(e) {\n    document.title = 'PW: BLOCKED-' + e.message;\n  }\n  scale();\n}\npowerFrame.src = window.location.protocol + \"//\" + window.location.hostname + \"/api8685\";\n</script>\n<!-- End of Power Flow Animation -->\n",
+        "content": "<!-- Center Title Style Override for Powerwall Dashboard -->\n<style>\n/* Make the panel header container use relative positioning */\ndiv[class*=\"-headerContainer\"] {\n  position: relative;\n}\n\n/* Absolutely center the panel title */\ndiv[class*=\"-title\"] {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  z-index: 1;\n  pointer-events: none;\n}\n\n/* Allow interactions with the title text itself */\ndiv[class*=\"-title\"] * {\n  pointer-events: auto;\n}\n\n/* Push menu button to the right using margin-left: auto */\ndiv[class*=\"-menuItem\"] {\n  margin-left: auto !important;\n}\n\n/* Ensure actions stay on the left side */\ndiv[class*=\"-flexGrow\"] {\n  display: none;\n}\n\n/* Force panel backgrounds transparent (fixes Grafana 10+ transparency) */\nhtml,\nbody,\n[class*=\"panelContent\"],\n[class*=\"panel-content\"],\n[class*=\"innerContainer\"],\n[class*=\"markdown-html\"],\n[data-testid=\"TextPanel-converted-content\"],\n.panel-container--transparent,\n.react-grid-item > div {\n  background: transparent !important;\n  background-color: transparent !important;\n}\n\n/* Ensure body fills full panel height so powerDiv 100% height resolves correctly */\nhtml, body {\n  height: 100%;\n  margin: 0;\n  padding: 0;\n}\n\n</style>\n<!-- End of Style Override -->\n<!-- pyPowerwall Power Flow Animation -->\n<style>\ndiv.powerDiv {\n      width: 100%;\n      height: 100%;\n      overflow: hidden;\n      background: url(public/img/load_big.gif) center center no-repeat;\n    }\ndiv.firmwareDiv {\n      width: 100%;\n      position: absolute;\n      text-align: center;\n      left: 0;\n      bottom: 0;\n      overflow: hidden;\n    }\niframe.powerFrame {\n      width: 450px;\n      height: 350px;\n      transform: scale(0);\n      transform-origin: center;\n      position: absolute;\n      left: 50%;\n      top: 50%;\n      background-color: #121212 !important;\n      border: none !important;\n      outline: none !important;\n      will-change: transform;\n      backface-visibility: hidden;\n      -webkit-backface-visibility: hidden;\n      -webkit-font-smoothing: antialiased;\n    }\n</style>\n<div class=\"powerDiv\">\n    <iframe id=\"frame8675\" class=\"powerFrame\" allowtransparency=\"true\" src=\"/public/img/grafana_icon.svg\">IFRAME not supported by browser.</iframe>\n\n    <div class=\"firmwareDiv\">\n  <p class=\"version\" style=\"color:gray; text-align: center;\">Firmware</p>\n</div>\n</div>\n<script>\n// Scale Animation when Window is Resized\nfunction scale() {\n  document.querySelectorAll('.powerFrame').forEach(scaled => {\n    parent = scaled.parentNode;\n    ratio = Math.min(1,parent.offsetWidth / scaled.offsetWidth, parent.offsetHeight / scaled.offsetHeight);\n    scaled.style.transform = 'translate(-50%, -50%) scale(' + ratio + ')';\n  })\n}\nwindow.addEventListener('resize', function(e){ scale(); }, false);\n\n// Display Firmware Version\nfunction showversion() {\n    var inverter_ver1 = window.location.protocol + \"//\" + window.location.hostname + \"/api/version8675\";\n    var inverter_ver2 = window.location.protocol + \"//\" + window.location.hostname + \"/api/version8685\";\n    $.when(\n      $.getJSON(inverter_ver1),\n      $.getJSON(inverter_ver2)\n    ).done(function(data1, data2) {\n        var text = `Firmware: 1JG - ${data1[0].version.split(\" \")[0]} and KW7 - ${data2[0].version.split(\" \")[0]}`;\n        $(\".version\").html(text);\n    });\n    setTimeout(showversion, 60000);\n}\nshowversion();\n\n// Load Animation from pyPowerwall\nvar powerFrame = document.getElementById('frame8675');\npowerFrame.onload = function() {\n  this.parentNode.setAttribute('style','background: none');\n  try {\n    var doc = this.contentDocument || this.contentWindow.document;\n    if (doc && doc.head) {\n      var s = doc.createElement('style');\n      s.textContent = 'html,body,.app,#root{background-color:#121212!important}';\n      doc.head.appendChild(s);\n    }\n  } catch(e) {}\n  scale();\n}\npowerFrame.src = window.location.protocol + \"//\" + window.location.hostname + \"/api8685\";\n</script>\n<!-- End of Power Flow Animation -->\n",
         "mode": "html"
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "title": "Power Flow",
       "transparent": true,
       "type": "text"
@@ -899,7 +899,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -1086,13 +1086,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Grid Status",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -1136,7 +1136,7 @@
           "alias": "sync",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT min(\"grid_status\") + 2 FROM \"grid\".\"http\" WHERE grid_status = -1 and $timeFilter GROUP BY time($__interval) fill(null) tz('${tz:text}')",
@@ -1148,7 +1148,7 @@
           "alias": "off_grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT min(\"grid_status\") + 1 FROM \"grid\".\"http\" WHERE grid_status = 0 and $timeFilter GROUP BY time($__interval) fill(null) tz('${tz:text}')",
@@ -1177,7 +1177,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1237,12 +1237,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "measurement": "http",
@@ -1280,7 +1280,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1340,12 +1340,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "measurement": "http",
@@ -1383,7 +1383,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -1444,13 +1444,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "SolarPowered",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "hide": false,
@@ -1491,7 +1491,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1551,12 +1551,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "measurement": "http",
@@ -1594,7 +1594,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1654,12 +1654,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "measurement": "http",
@@ -1697,7 +1697,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1757,13 +1757,13 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "measurement": "http",
@@ -1803,41 +1803,151 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
-        "defaults": {},
-        "overrides": []
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Home"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#4d7fc9",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Solar"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Grid"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 6,
+        "h": 4,
+        "w": 5,
         "x": 18,
         "y": 15
       },
       "id": 80,
-      "options": {},
-      "pluginVersion": "12.3.1",
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "titleSize": 12,
+          "valueSize": 12
+        },
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.3",
       "targets": [
         {
+          "alias": "Home",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
-          "query": "SELECT last(\"load_instant_power\")  / 1000 AS \"Home\", last(\"solar_instant_power\")  / 1000 AS \"Solar\",  last(\"site_instant_power\")  / 1000 AS \"Grid\" FROM \"raw\".\"http\" WHERE time >= now() - 10m",
+          "query": "SELECT last(\"load_instant_power\")  / 1000 AS \"Home\" FROM \"raw\".\"http\" WHERE time >= now() - 10m",
           "rawQuery": true,
           "refId": "A",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Solar",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "SELECT last(\"solar_instant_power\")  / 1000 AS \"Solar\" FROM \"raw\".\"http\" WHERE time >= now() - 10m",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series"
+        },
+        {
+          "alias": "Grid",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "hide": false,
+          "query": "SELECT last(\"site_instant_power\")  / 1000 AS \"Grid\" FROM \"raw\".\"http\" WHERE time >= now() - 10m",
+          "rawQuery": true,
+          "refId": "D",
           "resultFormat": "time_series"
         }
       ],
       "title": "Current State",
       "transparent": true,
-      "type": "yesoreyeram-boomtable-panel"
+      "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "Estimated Savings (Buy  = $ $avg_buy_per_kwh / Sell  = $ $avg_sell_per_kwh)",
       "fieldConfig": {
@@ -1919,13 +2029,13 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 0
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "powerwall > home",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "query": "SELECT fp FROM (SELECT sum(\"from_pw\")  * $avg_buy_per_kwh AS fp FROM kwh.http WHERE  $timeFilter )",
           "rawQuery": true,
@@ -1936,7 +2046,7 @@
           "alias": "solar > home",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT s - (tp + tg) FROM (SELECT sum(\"solar\") * $avg_buy_per_kwh AS s,  sum(\"to_pw\")  * $avg_buy_per_kwh AS tp, sum(\"to_grid\") * $avg_buy_per_kwh AS tg FROM kwh.http WHERE  $timeFilter )",
@@ -1948,7 +2058,7 @@
           "alias": "solar > grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT tgg FROM (SELECT sum(\"to_grid\") * $avg_sell_per_kwh AS tgg FROM kwh.http WHERE  $timeFilter )\n",
@@ -1960,7 +2070,7 @@
           "alias": "total",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT tgg + (s - tp - tg ) + fp FROM (SELECT sum(\"to_pw\")  * $avg_buy_per_kwh AS tp, sum(\"solar\") * $avg_buy_per_kwh AS s, sum(\"to_grid\") * $avg_buy_per_kwh AS tg, sum(\"from_pw\") * $avg_buy_per_kwh AS fp, sum(\"to_grid\") * $avg_sell_per_kwh AS tgg FROM kwh.http WHERE  $timeFilter )",
@@ -1976,7 +2086,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2226,13 +2336,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "From Solar",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "query": "SELECT  (1+from_solar/abs(from_solar))*from_solar/2  FROM (SELECT integral(solar)/1000/3600 - (integral(to_pw) - integral(grid_to_pw))/1000/3600  - integral(to_grid)/1000/3600  AS from_solar FROM (SELECT from_solar, solar, to_pw, to_grid, ((from_grid - home - solar) + ABS((from_grid - home - solar))) / 2 AS grid_to_pw FROM autogen.http WHERE  $timeFilter ))",
           "rawQuery": true,
@@ -2243,7 +2353,7 @@
           "alias": "From Grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [],
           "hide": false,
@@ -2298,7 +2408,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2395,13 +2505,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Home Usage",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -2448,7 +2558,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2545,13 +2655,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Solar Energy",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -2604,7 +2714,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2716,13 +2826,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "From Grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -2764,7 +2874,7 @@
           "alias": "To Grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -2818,7 +2928,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -2988,13 +3098,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Home Usage",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3044,7 +3154,7 @@
           "alias": "Solar",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3094,7 +3204,7 @@
           "alias": "Grid Usage",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT sum(\"from_grid\") - sum(\"to_grid\") as \"grid\" FROM \"kwh\".\"http\" WHERE  $timeFilter GROUP BY time(1d) fill(null) tz('${tz:text}')",
@@ -3124,7 +3234,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3173,12 +3283,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3197,7 +3307,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT integral(\"A_2N1_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
+          "query": "SELECT integral(\"A_KW7_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3224,13 +3334,13 @@
           "tags": []
         }
       ],
-      "title": "A_2N1 Energy",
+      "title": "A_KW7 Energy",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3279,12 +3389,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3303,7 +3413,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT integral(\"B_2N1_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
+          "query": "SELECT integral(\"B_KW7_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3330,13 +3440,13 @@
           "tags": []
         }
       ],
-      "title": "B_2N1 Energy",
+      "title": "B_KW7 Energy",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3385,12 +3495,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3409,7 +3519,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT integral(\"C_2N1_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
+          "query": "SELECT integral(\"C_KW7_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3436,13 +3546,13 @@
           "tags": []
         }
       ],
-      "title": "C_2N1 Energy",
+      "title": "C_KW7 Energy",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3491,12 +3601,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3515,7 +3625,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT integral(\"D_2N1_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
+          "query": "SELECT integral(\"D_KW7_Power\") / 3600 / 1000 FROM \"strings\".\"http\" WHERE $timeFilter",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -3542,13 +3652,13 @@
           "tags": []
         }
       ],
-      "title": "D_2N1 Energy",
+      "title": "D_KW7 Energy",
       "type": "stat"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3597,12 +3707,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3654,7 +3764,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3703,12 +3813,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3760,7 +3870,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3809,12 +3919,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3866,7 +3976,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3915,12 +4025,12 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -3985,7 +4095,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -4062,7 +4172,7 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 51
@@ -4083,13 +4193,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
-          "alias": "A_2N1",
+          "alias": "A_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4108,7 +4218,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"A_2N1_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"A_KW7_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "A_2N1",
           "resultFormat": "time_series",
@@ -4129,10 +4239,10 @@
           "tags": []
         },
         {
-          "alias": "B_2N1",
+          "alias": "B_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4152,7 +4262,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"B_2N1_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"B_KW7_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "B_2N1",
           "resultFormat": "time_series",
@@ -4173,10 +4283,10 @@
           "tags": []
         },
         {
-          "alias": "C_2N1",
+          "alias": "C_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4196,7 +4306,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"C_2N1_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"C_KW7_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "C_2N1",
           "resultFormat": "time_series",
@@ -4217,10 +4327,10 @@
           "tags": []
         },
         {
-          "alias": "D_2N1",
+          "alias": "D_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4240,7 +4350,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"D_2N1_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"D_KW7_Voltage\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "D_2N1",
           "resultFormat": "time_series",
@@ -4264,7 +4374,7 @@
           "alias": "A_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4308,7 +4418,7 @@
           "alias": "B_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4352,7 +4462,7 @@
           "alias": "C_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4396,7 +4506,7 @@
           "alias": "D_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4444,7 +4554,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -4521,7 +4631,7 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 12,
         "x": 12,
         "y": 51
@@ -4542,13 +4652,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
-          "alias": "A_2N1",
+          "alias": "A_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4567,7 +4677,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"A_2N1_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"A_KW7_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "A_2N1",
           "resultFormat": "time_series",
@@ -4588,10 +4698,10 @@
           "tags": []
         },
         {
-          "alias": "B_2N1",
+          "alias": "B_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4611,7 +4721,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"B_2N1_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"B_KW7_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "B_2N1",
           "resultFormat": "time_series",
@@ -4632,10 +4742,10 @@
           "tags": []
         },
         {
-          "alias": "C_2N1",
+          "alias": "C_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4655,7 +4765,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"C_2N1_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"C_KW7_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "C_2N1",
           "resultFormat": "time_series",
@@ -4676,10 +4786,10 @@
           "tags": []
         },
         {
-          "alias": "D_2N1",
+          "alias": "D_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4699,7 +4809,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"D_2N1_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"D_KW7_Current\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "D_2N1",
           "resultFormat": "time_series",
@@ -4723,7 +4833,7 @@
           "alias": "A_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4767,7 +4877,7 @@
           "alias": "B_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4811,7 +4921,7 @@
           "alias": "C_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4855,7 +4965,7 @@
           "alias": "D_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -4903,7 +5013,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -4980,10 +5090,10 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 57
       },
       "id": 63,
       "options": {
@@ -5001,13 +5111,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
-          "alias": "A_2N1",
+          "alias": "A_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5026,7 +5136,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"A_2N1_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"A_KW7_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "A_2N1",
           "resultFormat": "time_series",
@@ -5047,10 +5157,10 @@
           "tags": []
         },
         {
-          "alias": "B_2N1",
+          "alias": "B_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5070,7 +5180,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"B_2N1_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"B_KW7_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "B_2N1",
           "resultFormat": "time_series",
@@ -5091,10 +5201,10 @@
           "tags": []
         },
         {
-          "alias": "C_2N1",
+          "alias": "C_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5114,7 +5224,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"C_2N1_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"C_KW7_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "C_2N1",
           "resultFormat": "time_series",
@@ -5135,10 +5245,10 @@
           "tags": []
         },
         {
-          "alias": "D_2N1",
+          "alias": "D_KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5158,7 +5268,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "strings",
-          "query": "SELECT mean(\"D_2N1_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"D_KW7_Power\") FROM \"strings\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "D_2N1",
           "resultFormat": "time_series",
@@ -5182,7 +5292,7 @@
           "alias": "A_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5226,7 +5336,7 @@
           "alias": "B_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5270,7 +5380,7 @@
           "alias": "C_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5314,7 +5424,7 @@
           "alias": "D_1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5362,7 +5472,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "fieldConfig": {
         "defaults": {
@@ -5439,10 +5549,10 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 57
       },
       "id": 34,
       "options": {
@@ -5460,13 +5570,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Inverter 1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5504,10 +5614,10 @@
           "tags": []
         },
         {
-          "alias": "Inverter 2N1",
+          "alias": "Inverter KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5546,15 +5656,17 @@
           "tags": []
         },
         {
+          "alias": "Total Inverter Power",
           "datasource": {
-            "name": "Expression",
-            "type": "__expr__",
-            "uid": "__expr__"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
           },
-          "expression": "$A+$B",
           "hide": false,
-          "refId": "Total Inverter Power",
-          "type": "math"
+          "policy": "strings",
+          "query": "SELECT max(\"Inverter6\") + max(\"Inverter7\") FROM \"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series"
         }
       ],
       "title": "Inverter Power",
@@ -5567,7 +5679,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 63
       },
       "id": 82,
       "panels": [],
@@ -5577,7 +5689,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -5760,10 +5872,10 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 6,
         "x": 0,
-        "y": 62
+        "y": 64
       },
       "id": 85,
       "options": {
@@ -5779,13 +5891,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Solar",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5826,7 +5938,7 @@
           "alias": "Home",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5868,7 +5980,7 @@
           "alias": "Grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -5914,7 +6026,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -6047,10 +6159,10 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 6,
         "x": 6,
-        "y": 62
+        "y": 64
       },
       "id": 61,
       "options": {
@@ -6068,13 +6180,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "1JG - 1",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6118,7 +6230,7 @@
           "alias": "1JG - 2",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6159,10 +6271,10 @@
           "tags": []
         },
         {
-          "alias": "2N1 - 1",
+          "alias": "KW7 - 1",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6182,7 +6294,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"2N1_PVAC_VL1Ground\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"KW7_PVAC_VL1Ground\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
@@ -6203,10 +6315,10 @@
           "tags": []
         },
         {
-          "alias": "2N1 - 2",
+          "alias": "KW7 - 2",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6226,7 +6338,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"2N1_PVAC_VL2Ground\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"KW7_PVAC_VL2Ground\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series",
@@ -6254,7 +6366,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -6436,10 +6548,10 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 6,
         "x": 12,
-        "y": 62
+        "y": 64
       },
       "id": 84,
       "options": {
@@ -6455,13 +6567,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Solar",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6502,7 +6614,7 @@
           "alias": "Home",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6544,7 +6656,7 @@
           "alias": "Grid",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6590,7 +6702,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -6772,10 +6884,10 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 6,
         "x": 18,
-        "y": 62
+        "y": 64
       },
       "id": 104,
       "options": {
@@ -6791,13 +6903,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Phase A current",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6817,7 +6929,6 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"value\") FROM \"measurement\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": false,
           "refId": "E",
           "resultFormat": "time_series",
@@ -6841,7 +6952,7 @@
           "alias": "Phase B current",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -6861,7 +6972,6 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"value\") FROM \"measurement\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": false,
           "refId": "F",
           "resultFormat": "time_series",
@@ -6882,15 +6992,17 @@
           "tags": []
         },
         {
+          "alias": "Phase Delta",
           "datasource": {
-            "name": "Expression",
-            "type": "__expr__",
-            "uid": "__expr__"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
           },
-          "expression": "abs($E-$F)",
           "hide": false,
-          "refId": "Phase Delta",
-          "type": "math"
+          "policy": "raw",
+          "query": "SELECT abs(mean(\"site_i_a_current\") - mean(\"site_i_b_current\")) FROM \"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series"
         }
       ],
       "title": "Current Details",
@@ -6900,7 +7012,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -7031,7 +7143,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 67
+        "y": 70
       },
       "id": 38,
       "options": {
@@ -7051,13 +7163,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Frequency 1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7097,10 +7209,10 @@
           "tags": []
         },
         {
-          "alias": "Frequency 2N1",
+          "alias": "Frequency KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7120,7 +7232,7 @@
           "measurement": "http",
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"2N1_PVAC_Fout\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"KW7_PVAC_Fout\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -7148,7 +7260,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -7230,7 +7342,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Fan Speed Target 2N1"
+              "options": "Fan Speed Target KW7"
             },
             "properties": [
               {
@@ -7251,7 +7363,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 75
       },
       "id": 103,
       "options": {
@@ -7270,13 +7382,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Fan Speed Actual 1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7319,7 +7431,7 @@
           "alias": "Fan Speed Target 1JG",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7359,10 +7471,10 @@
           "tags": []
         },
         {
-          "alias": "Fan Speed Actual 2N1",
+          "alias": "Fan Speed Actual KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7381,7 +7493,7 @@
           "hide": false,
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"2N1_PVAC_Fan_Speed_Actual_RPM\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"KW7_PVAC_Fan_Speed_Actual_RPM\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
@@ -7402,10 +7514,10 @@
           "tags": []
         },
         {
-          "alias": "Fan Speed Target 2N1",
+          "alias": "Fan Speed Target KW7",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7424,7 +7536,7 @@
           "hide": false,
           "orderByTime": "ASC",
           "policy": "raw",
-          "query": "SELECT mean(\"2N1_PVAC_Fan_Speed_Target_RPM\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
+          "query": "SELECT mean(\"KW7_PVAC_Fan_Speed_Target_RPM\") FROM \"raw\".\"http\" WHERE $timeFilter GROUP BY time($__interval) fill(null)",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series",
@@ -7455,7 +7567,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 80
       },
       "id": 65,
       "panels": [],
@@ -7465,7 +7577,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -7507,8 +7619,8 @@
             "matcher": {
               "id": "byValue",
               "options": {
-                "reducer": "allIsNull",
                 "op": "gte",
+                "reducer": "allIsNull",
                 "value": 1
               }
             },
@@ -7527,8 +7639,8 @@
             "matcher": {
               "id": "byValue",
               "options": {
-                "reducer": "max",
                 "op": "lte",
+                "reducer": "max",
                 "value": 0
               }
             },
@@ -7662,6 +7774,26 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*Comms"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-red",
+                      "value": 0
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -7669,7 +7801,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 81
       },
       "id": 68,
       "options": {
@@ -7688,12 +7820,12 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "hide": false,
           "query": "SELECT *::field from alerts.alerts where $timeFilter",
@@ -7721,7 +7853,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 91
       },
       "id": 57,
       "panels": [],
@@ -7731,7 +7863,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -7930,7 +8062,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 89
+        "y": 92
       },
       "id": 59,
       "options": {
@@ -7948,13 +8080,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Temperature",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -7995,7 +8127,7 @@
           "alias": "Humidity (%)",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8037,7 +8169,7 @@
           "alias": "Clouds (%)",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8079,7 +8211,7 @@
           "alias": "Feels Like",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8125,7 +8257,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "P98152F540002671D"
+        "uid": "${DS_INFLUXDB}"
       },
       "description": "",
       "fieldConfig": {
@@ -8303,7 +8435,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 95
+        "y": 98
       },
       "id": 60,
       "options": {
@@ -8321,13 +8453,13 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "alias": "Snow",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8368,7 +8500,7 @@
           "alias": "Pressure",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8410,7 +8542,7 @@
           "alias": "Rain",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8452,7 +8584,7 @@
           "alias": "Visibility (K)",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8500,7 +8632,7 @@
           "alias": "Wind",
           "datasource": {
             "type": "influxdb",
-            "uid": "P98152F540002671D"
+            "uid": "${DS_INFLUXDB}"
           },
           "groupBy": [
             {
@@ -8552,6 +8684,22 @@
     "list": [
       {
         "current": {
+          "text": "InfluxDB (auto provisioned)",
+          "value": "P98152F540002671D"
+        },
+        "description": "InfluxDB Datasource",
+        "hide": 2,
+        "includeAll": false,
+        "name": "DS_INFLUXDB",
+        "options": [],
+        "query": "influxdb",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": true,
+        "type": "datasource"
+      },
+      {
+        "current": {
           "text": "0.177319",
           "value": "0.177319"
         },
@@ -8591,9 +8739,13 @@
       }
     ]
   },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
   "timepicker": {},
   "timezone": "America/New_York",
   "title": "Power and Energy Monitoring",
   "uid": "RSabAvRRzZ",
-  "version": 104
+  "version": 199
 }
